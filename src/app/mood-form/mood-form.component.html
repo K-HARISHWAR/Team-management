@@ -1,0 +1,39 @@
+<div class="form-wrapper">
+  <h2>📝 Log Your Mood</h2>
+
+  <form [formGroup]="moodForm" (ngSubmit)="submitMood()">
+    <div class="mood-options">
+      <label *ngFor="let emoji of moodOptions">
+        <input 
+          type="radio" 
+          formControlName="mood" 
+          [value]="emoji" 
+        />
+        <span class="emoji">{{ emoji }}</span>
+      </label>
+    </div>
+
+    <div class="day-rating">
+      <label for="dayRating">⭐ Rate Your Day (1–5):</label>
+      <select id="dayRating" formControlName="dayRating">
+        <option value="" disabled>Select</option>
+        <option *ngFor="let rating of [1, 2, 3, 4, 5]" [value]="rating">{{ rating }}</option>
+      </select>
+    </div>
+
+    <div class="date-field">
+      <label for="date">📅 Select Date:</label>
+      <input type="date" id="date" formControlName="date" />
+    </div>
+
+    <textarea
+      formControlName="note"
+      placeholder="Write an optional note..."
+      rows="4">
+    </textarea>
+
+    <button type="submit" [disabled]="moodForm.invalid || isSubmitting">
+      {{ isSubmitting ? 'Submitting...' : 'Submit Mood' }}
+    </button>
+  </form>
+</div>

@@ -1,0 +1,17 @@
+<div class="login-container">
+  <h2>Team Mood Tracker</h2>
+
+  <form (ngSubmit)="onLogin()">
+    <label>Email</label>
+    <input type="email" [(ngModel)]="email" name="email" required />
+
+    <label>Password</label>
+    <input type="password" [(ngModel)]="password" name="password" required />
+
+    <button type="submit" [disabled]="loading">Login</button>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </form>
+
+  <p class="signup-link">Need an account? Ask your admin to register you.</p>
+</div>

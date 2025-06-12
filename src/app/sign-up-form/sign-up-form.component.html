@@ -1,0 +1,28 @@
+<div class="signup-container">
+  <h2>Register New Team Member</h2>
+
+  <form (ngSubmit)="onSignup()">
+    <label>Name</label>
+    <input type="text" [(ngModel)]="name" name="name" required />
+
+    <label>Email</label>
+    <input type="email" [(ngModel)]="email" name="email" required />
+
+    <label>Password</label>
+    <input type="password" [(ngModel)]="password" name="password" required />
+
+    <label>Team</label>
+    <input type="text" [(ngModel)]="team" name="team" required />
+
+    <label>Role</label>
+    <select [(ngModel)]="role" name="role">
+      <option value="member">Member</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <button type="submit" [disabled]="loading">Create User</button>
+  </form>
+
+  <p class="success" *ngIf="message">{{ message }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</div>

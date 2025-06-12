@@ -1,0 +1,28 @@
+<div class="create-member-container">
+  <h2>Create New Member</h2>
+
+  <form [formGroup]="memberForm" (ngSubmit)="onSubmit()">
+    <label>Name:</label>
+    <input type="text" formControlName="name" />
+
+    <label>Email:</label>
+    <input type="email" formControlName="email" />
+
+    <label>Password:</label>
+    <input type="password" formControlName="password" />
+
+    <label>Role:</label>
+    <select formControlName="role">
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <label>Team:</label>
+    <input type="text" formControlName="team" />
+
+    <button type="submit" [disabled]="memberForm.invalid">Create Member</button>
+  </form>
+
+  <p class="success" *ngIf="message">{{ message }}</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+</div>

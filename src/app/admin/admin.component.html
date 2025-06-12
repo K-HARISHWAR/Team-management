@@ -1,0 +1,46 @@
+<div class="admin-container">
+  <h2>Admin Dashboard</h2>
+  <button (click)="navigateToCreateMember()" class="create-button">
+    + Create Member
+  </button>
+  <div *ngIf="loading">Loading users...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div *ngIf="!loading && !selectedTeam" class="team-cards">
+    <h3>Teams</h3>
+    <div class="cards-wrapper">
+      <div 
+        class="team-card" 
+        *ngFor="let team of teams" 
+        (click)="selectTeam(team)">
+        {{ team }}
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && selectedTeam">
+    <button (click)="clearSelection()">← Back to Teams</button>
+    <h3>{{ selectedTeam }} Team Members</h3>
+
+    <table *ngIf="getTeamMembers(selectedTeam).length" class="user-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Password</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of getTeamMembers(selectedTeam)">
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.password }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="getTeamMembers(selectedTeam).length === 0">
+      No members in this team.
+    </p>
+  </div>
+</div>

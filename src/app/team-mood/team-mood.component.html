@@ -1,0 +1,37 @@
+<div class="team-overview-wrapper">
+  <h2>📊 Team Mood Overview</h2>
+
+  <div class="filter-buttons">
+    <button [class.active]="filterRange === '7d'" (click)="onFilterChange('7d')">Last 7 Days</button>
+    <button [class.active]="filterRange === '30d'" (click)="onFilterChange('30d')">Last 30 Days</button>
+  </div>
+
+  <div style="max-width: 500px; margin: auto;">
+    <canvas baseChart
+            [data]="{ labels: moodChartLabels, datasets: [{ data: moodChartData }] }"
+            [type]="'pie'"
+            [options]="chartOptions">
+    </canvas>
+  </div>
+
+  <table class="mood-table" *ngIf="teamMoods.length > 0">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Username</th>
+        <th>Mood</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mood of teamMoods">
+        <td>{{ mood.date | date: 'mediumDate' }}</td>
+        <td>{{ mood.username }}</td>
+        <td>{{ mood.mood }}</td>
+        <td>{{ mood.note || '-' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="teamMoods.length === 0">No mood entries found for this range.</p>
+</div>
