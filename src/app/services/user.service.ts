@@ -32,10 +32,10 @@ export class UserService {
     return this.http.post<any>(url, body).pipe(map(res => res.docs));
   }
 
-  getUserByUsername(username: string): Observable<User | null> {
+  getUserByUsername(name: string): Observable<User | null> {
     const url = `${this.dbUrl}/_find`;
     const body = {
-      selector: { username },
+      selector: { name },
       limit: 1
     };
     return this.http.post<any>(url, body).pipe(

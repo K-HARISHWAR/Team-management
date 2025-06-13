@@ -2,11 +2,6 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
     {
-    path: 'sign-up-form',
-    loadComponent: () =>
-      import('./sign-up-form/sign-up-form.component').then(m => m.SignupFormComponent),
-},
-    {
     path:'',
     loadComponent: () =>
      import('./login/login.component').then(m => m.LoginComponent),
@@ -35,5 +30,10 @@ export const routes: Routes = [
   path:'create-member',
   loadComponent:()=>
     import('./create-member/create-member.component').then(m=>m.CreateMemberComponent),
+},
+{
+  path:'mood-trend',
+  loadComponent:()=>
+    import('./mood-trend/mood-trend.component').then(m=>m.MoodTrendComponent),
 }
 ];

@@ -3,9 +3,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private dbUrl = 'http://localhost:5984/users'; // users DB
-  private couchUsername = 'Harishwar'; // CouchDB admin
-  private couchPassword = 'harish22';   // CouchDB password
+  private dbUrl = 'http://localhost:5984/users'; 
+  private couchUsername = 'Harishwar'; 
+  private couchPassword = 'harish22';   
 
   constructor(private http: HttpClient) {}
 

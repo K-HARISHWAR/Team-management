@@ -2,35 +2,35 @@
   <h2>📝 Log Your Mood</h2>
 
   <form [formGroup]="moodForm" (ngSubmit)="submitMood()">
-    <div class="mood-options">
-      <label *ngFor="let emoji of moodOptions">
-        <input 
-          type="radio" 
-          formControlName="mood" 
-          [value]="emoji" 
-        />
+    <div class="form-section mood-options">
+      <label *ngFor="let emoji of moodOptions" class="mood-label">
+        <input type="radio" formControlName="mood" [value]="emoji" />
         <span class="emoji">{{ emoji }}</span>
       </label>
     </div>
 
-    <div class="day-rating">
-      <label for="dayRating">⭐ Rate Your Day (1–5):</label>
+    <div class="form-section day-rating">
+      <label for="dayRating">⭐ Rate Your Day</label>
       <select id="dayRating" formControlName="dayRating">
-        <option value="" disabled>Select</option>
+        <option value="" disabled>Select a rating</option>
         <option *ngFor="let rating of [1, 2, 3, 4, 5]" [value]="rating">{{ rating }}</option>
       </select>
     </div>
 
-    <div class="date-field">
-      <label for="date">📅 Select Date:</label>
+    <div class="form-section date-field">
+      <label for="date">📅 Date</label>
       <input type="date" id="date" formControlName="date" />
     </div>
 
-    <textarea
-      formControlName="note"
-      placeholder="Write an optional note..."
-      rows="4">
-    </textarea>
+    <div class="form-section">
+      <label for="note">🗒️ Note</label>
+      <textarea
+        id="note"
+        formControlName="note"
+        placeholder="Write an optional note..."
+        rows="4">
+      </textarea>
+    </div>
 
     <button type="submit" [disabled]="moodForm.invalid || isSubmitting">
       {{ isSubmitting ? 'Submitting...' : 'Submit Mood' }}

@@ -22,7 +22,7 @@ export class CreateMemberComponent {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      role: ['user', Validators.required],
+      role: ['', Validators.required],
       team: ['', Validators.required]
     });
   }
@@ -40,7 +40,7 @@ export class CreateMemberComponent {
       password: formValue.password,
       role: formValue.role,
       team: formValue.team,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString().slice(0,10)
     };
 
     try {

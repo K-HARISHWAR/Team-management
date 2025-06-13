@@ -1,0 +1,26 @@
+<div class="mood-trend-container">
+  <h2 class="section-title">📈 Mood Trends</h2>
+
+  <div class="charts-wrapper">
+    <!-- Line Chart -->
+    <div class="chart-card">
+      <h3 class="chart-title">Daily Mood Ratings</h3>
+      <canvas baseChart 
+        [data]="lineChartData" 
+        [options]="lineChartOptions"
+        [type]="'line'" 
+        class="chart-canvas">
+      </canvas>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="chart-card">
+      <h3 class="chart-title">Mood Distribution</h3>
+      <canvas baseChart 
+        [data]="pieChartData" 
+        [type]="'pie'" 
+        class="chart-canvas">
+      </canvas>
+    </div>
+  </div>
+</div>

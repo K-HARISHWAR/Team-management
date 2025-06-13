@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  constructor(private router:Router){}
   users: any[] = [];
   teams: string[] = [];
   selectedTeam: string | null = null;
@@ -19,6 +18,8 @@ export class AdminComponent implements OnInit {
   errorMessage = '';
 
   private userDb = new PouchDB('http://Harishwar:harish22@localhost:5984/users');
+
+  constructor(public router: Router) {}
 
   async ngOnInit() {
     this.loading = true;
@@ -30,7 +31,6 @@ export class AdminComponent implements OnInit {
 
       const teamSet = new Set(this.users.map(user => user.team).filter(Boolean));
       this.teams = Array.from(teamSet);
-
     } catch (error: any) {
       this.errorMessage = 'Failed to fetch users: ' + (error.message || 'Unknown error');
       console.error(error);
@@ -51,7 +51,22 @@ export class AdminComponent implements OnInit {
     this.selectedTeam = null;
   }
 
-   navigateToCreateMember() {
+  navigateToCreateMember() {
     this.router.navigate(['/create-member']);
+  }
+
+  logout() {
+    this.router.navigate(['']);
+  }
+
+  async deleteUser(user: any) {
+    try {
+      const doc = await this.userDb.get(user._id);
+      await this.userDb.remove(doc);
+      this.users = this.users.filter(u => u._id !== user._id);
+      console.log(`User ${user.name} deleted.`);
+    } catch (err) {
+      console.error('Error deleting user:', err);
+    }
   }
 }

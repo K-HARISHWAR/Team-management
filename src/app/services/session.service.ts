@@ -28,6 +28,6 @@ export class SessionService {
   }
 
   get isLoggedIn(): boolean {
-    return !!localStorage.getItem('username');
+    return !!localStorage.getItem('name');
   }
 }

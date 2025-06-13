@@ -1,77 +1,104 @@
 .form-wrapper {
-  max-width: 500px;
+  max-width: 520px;
   margin: 2rem auto;
-  padding: 1.5rem;
-  background-color: var(--bg, #fff);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 1rem;
+  padding: 2rem;
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 1.25rem;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 h2 {
   text-align: center;
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.form-section {
   margin-bottom: 1.5rem;
 }
 
-.mood-options {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 1.2rem;
-}
-
-.mood-options label {
-  cursor: pointer;
-  text-align: center;
-}
-
-.mood-options input[type='radio'] {
-  display: none;
-}
-
-.emoji {
-  font-size: 2rem;
+label {
   display: block;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: transform 0.2s, background-color 0.2s;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #444;
 }
 
-input[type='radio']:checked + .emoji {
-  background-color: #cce5ff;
-  transform: scale(1.3);
-}
-
+input,
+select,
 textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  resize: none;
-  margin-bottom: 1rem;
+  border-radius: 0.6rem;
   font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  outline: none;
+}
+
+.mood-options {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mood-label {
+  flex: 1 1 20%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.mood-label input[type='radio'] {
+  display: none;
+}
+
+.emoji {
+  display: inline-block;
+  font-size: 2rem;
+  padding: 0.6rem;
+  border-radius: 50%;
+  transition: transform 0.3s, background-color 0.3s;
+  user-select: none;
+}
+
+input[type='radio']:checked + .emoji {
+  background-color: #007bff1a;
+  transform: scale(1.25);
+  box-shadow: 0 0 0 3px #007bff44;
+}
+
+textarea {
+  resize: vertical;
 }
 
 button {
   width: 100%;
-  padding: 0.8rem;
+  padding: 0.9rem;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 0.5rem;
-  font-weight: bold;
+  border-radius: 0.6rem;
+  font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+button:hover:enabled {
+  background-color: #0069d9;
 }
 
 button:disabled {
-  background-color: #9dbbe0;
+  background-color: #c0d4f2;
   cursor: not-allowed;
-}
-
-.day-rating {
-  margin: 1em 0;
-}
-
-.day-rating select {
-  padding: 0.5em;
-  font-size: 1em;
 }

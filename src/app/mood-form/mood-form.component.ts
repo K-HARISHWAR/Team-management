@@ -13,10 +13,10 @@ import { MoodService } from '../services/mood.service';
 })
 export class MoodFormComponent implements OnInit {
   moodForm!: FormGroup;
-  username: string = '';
+  name: string = '';
   team: string = '';
   isSubmitting = false;
-  moodOptions = ['😊', '😐', '😔', '😡', '😴'];
+  moodOptions = ['😊 Happy', '😐 Neutral', '😔 Sad', '😡 Angry', '😴 Sleepy'];
 
   constructor(
     private fb: FormBuilder,
@@ -25,13 +25,13 @@ export class MoodFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.username = localStorage.getItem('name') || '';
+    this.name = localStorage.getItem('name') || '';
     this.team = localStorage.getItem('team') || '';
 
     this.moodForm = this.fb.group({
       mood: ['', Validators.required],
       note: [''],
-      dayRating: ['', Validators.required],
+      dayRating: [null, [Validators.required,Validators.min(1),Validators.max(5)]],
       date: [new Date().toISOString().slice(0, 10), Validators.required]
     });
   }
@@ -41,12 +41,12 @@ export class MoodFormComponent implements OnInit {
 
     const { mood, note, dayRating, date } = this.moodForm.value;
     const entry = {
-      _id:`${this.username}_${this.team}_${date}`,
+      _id:`${this.name}_${this.team}_${date}`,
       mood,
       note,
-      dayRating,
+      dayRating:Number(dayRating),
       date,
-      username: this.username,
+      name: this.name,
       team: this.team
     };
 

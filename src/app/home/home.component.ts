@@ -100,7 +100,7 @@ export class HomeComponent implements OnInit {
 
   loadStats(): void {
     this.moodService.getUserMoodStats(this.name).subscribe(stats => {
-      this.totalEntries = stats.total || 0;
+      this.totalEntries = stats.total-1 || 0;
       this.mostFrequentMood = stats.frequentMood || 'N/A';
     });
   }
@@ -116,5 +116,9 @@ export class HomeComponent implements OnInit {
 
   goToMoodForm() {
     this.router.navigate(['mood-form']);
+  }
+
+  goToMoodTrend(){
+    this.router.navigate(['/mood-trend']);
   }
 }

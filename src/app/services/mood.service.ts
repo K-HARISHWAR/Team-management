@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 
 interface MoodEntry {
   _id?: string;
-  username: string;
+  name: string;
   team: string;
   mood: string;
   note: string;
@@ -22,20 +22,17 @@ export class MoodService {
 
   constructor(private http: HttpClient) {}
 
-  // 📌 1. Add mood entry
   addMood(entry: MoodEntry): Observable<any> {
     return this.http.post(this.dbUrl, entry, { headers: this.headers });
   }
 
-  // 📌 2. Save mood entry (same as addMood for now)
   saveMoodEntry(entry: MoodEntry): Observable<any> {
     return this.http.post(this.dbUrl, entry, { headers: this.headers });
   }
 
-  // 📌 3. Get all mood dates for streak calculation
-  getUserMoodDates(username: string): Observable<string[]> {
+  getUserMoodDates(name: string): Observable<string[]> {
     const body = {
-      selector: { username },
+      selector: { name },
       fields: ['date']
     };
     return this.http.post<any>(`${this.dbUrl}/_find`, body, { headers: this.headers }).pipe(
@@ -43,10 +40,9 @@ export class MoodService {
     );
   }
 
-  // 📌 4. Get stats: total entries + most frequent mood
-  getUserMoodStats(username: string): Observable<{ total: number; frequentMood: string }> {
+  getUserMoodStats(name: string): Observable<{ total: number; frequentMood: string }> {
     const body = {
-      selector: { username },
+      selector: { name },
       fields: ['mood']
     };
     return this.http.post<any>(`${this.dbUrl}/_find`, body, { headers: this.headers }).pipe(
@@ -67,10 +63,9 @@ export class MoodService {
     );
   }
 
-  // 📌 5. Get latest 3 mood entries (sorted)
-  getRecentMoods(username: string): Observable<{ mood: string; note: string; date: string }[]> {
+  getRecentMoods(name: string): Observable<{ mood: string; note: string; date: string }[]> {
     const query = {
-      selector: { username },
+      selector: { name },
       sort: [{ date: 'desc' }],
       limit: 3,
       fields: ['mood', 'note', 'date']
@@ -93,21 +88,19 @@ export class MoodService {
     );
   }
 
-  // 📌 6. Get all moods for a team (used in admin dashboard)
   getTeamMoods(team: string, range: '7d' | '30d'): Observable<MoodEntry[]> {
     const body = {
       selector: { team },
-      fields: ['username', 'mood', 'date']
+      fields: ['name', 'mood', 'date']
     };
     return this.http.post<any>(`${this.dbUrl}/_find`, body, { headers: this.headers }).pipe(
       map(res => res.docs)
     );
   }
 
-  // 📌 7. Create indexes for username, date, team (call once)
   createIndexes(): void {
     const indexes = [
-      { fields: ['username'], name: 'username-index' },
+      { fields: ['name'], name: 'name-index' },
       { fields: ['date'], name: 'date-index' },
       { fields: ['team'], name: 'team-index' }
     ];
