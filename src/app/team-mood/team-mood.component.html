@@ -13,25 +13,5 @@
             [options]="chartOptions">
     </canvas>
   </div>
-
-  <table class="mood-table" *ngIf="teamMoods.length > 0">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Username</th>
-        <th>Mood</th>
-        <th>Note</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let mood of teamMoods">
-        <td>{{ mood.date | date: 'mediumDate' }}</td>
-        <td>{{ mood.username }}</td>
-        <td>{{ mood.mood }}</td>
-        <td>{{ mood.note || '-' }}</td>
-      </tr>
-    </tbody>
-  </table>
-
   <p *ngIf="teamMoods.length === 0">No mood entries found for this range.</p>
 </div>

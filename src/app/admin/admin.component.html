@@ -1,36 +1,46 @@
 <div class="admin-container">
-  <div class="admin-header">
+  <header class="admin-header">
     <h2>Admin Dashboard</h2>
-    <button (click)="logout()" class="logout-button">Logout</button>
-  </div>
+    <button class="logout-button" (click)="logout()">Logout</button>
+  </header>
 
-  <div class="top-actions">
-    <button (click)="navigateToCreateMember()" class="create-button">
-      + Create Member
-    </button>
-  </div>
+  <section class="top-actions">
+    <button class="create-button" (click)="navigateToCreateMember()">+ Create Member</button>
+  </section>
 
-  <div *ngIf="loading" class="loading">Loading users...</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <section *ngIf="loading" class="loading">
+    <p>Loading users...</p>
+  </section>
 
-  <div *ngIf="!loading && !selectedTeam" class="team-cards">
-    <h3>Select a Team</h3>
+  <section *ngIf="errorMessage" class="error">
+    <p>{{ errorMessage }}</p>
+  </section>
+
+  <section *ngIf="!loading && !selectedTeam" class="team-cards">
+    <h3>Teams</h3>
     <div class="cards-wrapper">
-      <div
+      <article
         class="team-card"
         *ngFor="let team of teams"
         (click)="selectTeam(team)">
         <span class="team-name">{{ team }}</span>
         <span class="team-count">Members: {{ getTeamMembers(team).length }}</span>
-      </div>
+      </article>
     </div>
-  </div>
+  </section>
 
-  <div *ngIf="!loading && selectedTeam" class="team-members">
-    <button (click)="clearSelection()" class="back-button">← Back to Teams</button>
+  <section *ngIf="!loading && selectedTeam" class="team-members">
+    <button class="back-button" (click)="clearSelection()">← Back to Teams</button>
     <h3>{{ selectedTeam }} Team Members</h3>
 
-    <table *ngIf="getTeamMembers(selectedTeam).length" class="user-table">
+    <button 
+      class="action-button" 
+      style="margin: 10px 0;" 
+      (click)="navigateToTeamMood(selectedTeam)">
+      📊 View Team Mood
+    </button>
+
+    <table *ngIf="getTeamMembers(selectedTeam).length > 0" class="user-table">
       <thead>
         <tr>
           <th>Name</th>
@@ -45,8 +55,8 @@
           <td>{{ user.email }}</td>
           <td>{{ user.password }}</td>
           <td>
-            <button class="delete-button" (click)="deleteUser(user)">Delete</button>
-            <button class="action-button" (click)="router.navigate(['/view-mood', user._id])">View Mood</button>
+            <button class="delete-button" (click)="deleteUser(user)">🗑 Delete</button>
+            <button class="action-button" (click)="navigateToUserMood(user.name)">📈 View Mood</button>
           </td>
         </tr>
       </tbody>
@@ -55,5 +65,5 @@
     <p *ngIf="getTeamMembers(selectedTeam).length === 0" class="no-members">
       No members in this team.
     </p>
-  </div>
+  </section>
 </div>

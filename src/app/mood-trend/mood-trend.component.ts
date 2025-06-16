@@ -4,6 +4,7 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import PouchDB from 'pouchdb-browser';
 import { SessionService } from '../services/session.service';
+import { ActivatedRoute } from '@angular/router';
 
 interface MoodEntry {
   _id: string;
@@ -58,21 +59,39 @@ export class MoodTrendComponent implements OnInit {
     }
   };
 
-  constructor(private session: SessionService) {}
+  userName: string = ''; // For displaying in the heading
+
+  constructor(
+    private session: SessionService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.fetchUserMoodData();
+    const nameParam = this.route.snapshot.paramMap.get('name');
 
+    if (nameParam) {
+      const decodedName = decodeURIComponent(nameParam);
+      this.userName = decodedName;
+      this.fetchUserMoodData(decodedName);
+      this.setupLiveSync(decodedName);
+    } else {
+      const loggedInName = this.session.name;
+      this.userName = loggedInName;
+      this.fetchUserMoodData(loggedInName);
+      this.setupLiveSync(loggedInName);
+    }
+  }
+
+  setupLiveSync(name: string) {
     this.db.sync('http://Harishwar:harish22@localhost:5984/users', {
       live: true,
       retry: true,
     }).on('change', () => {
-      this.fetchUserMoodData();
+      this.fetchUserMoodData(name);
     });
   }
 
-  async fetchUserMoodData() {
-    const name = this.session.name;
+  async fetchUserMoodData(name: string) {
     if (!name) {
       console.log('No username found');
       return;

@@ -1,4 +1,4 @@
-// team-mood-overview.component.ts
+// team-mood.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -6,6 +6,7 @@ import { ChartConfiguration, ChartType } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { MoodService } from '../services/mood.service';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-team-mood-overview',
@@ -23,12 +24,28 @@ export class TeamMoodComponent implements OnInit {
   moodChartData: number[] = [];
   moodChartType: ChartType = 'pie';
 
-  constructor(private moodService: MoodService) {}
+  chartOptions: ChartConfiguration<'pie'>['options'] = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Team Mood Distribution'
+      }
+    }
+  };
+
+  constructor(
+    private moodService: MoodService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    const storedTeam = localStorage.getItem('team');
-    if (storedTeam) {
-      this.teamName = storedTeam;
+    const routeTeam = this.route.snapshot.paramMap.get('teamName');
+    if (routeTeam) {
+      this.teamName = decodeURIComponent(routeTeam);
       this.fetchTeamMoods();
     }
   }
@@ -49,23 +66,12 @@ export class TeamMoodComponent implements OnInit {
     const moodCounts: { [mood: string]: number } = {};
     this.teamMoods.forEach(entry => {
       const mood = entry.mood;
+       if (mood && typeof mood === 'string' && mood.trim() !== '') {
       moodCounts[mood] = (moodCounts[mood] || 0) + 1;
+    }
     });
 
     this.moodChartLabels = Object.keys(moodCounts);
     this.moodChartData = Object.values(moodCounts);
   }
-
-  chartOptions: ChartConfiguration<'pie'>['options'] = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Team Mood Distribution'
-      }
-    }
-  };
 }

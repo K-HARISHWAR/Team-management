@@ -69,4 +69,14 @@ export class AdminComponent implements OnInit {
       console.error('Error deleting user:', err);
     }
   }
+
+  navigateToUserMood(userName: string) {
+  const encoded = encodeURIComponent(userName);
+  this.router.navigate(['/view-mood', encoded]);
+}
+
+navigateToTeamMood(teamName: string) {
+  const encoded = encodeURIComponent(teamName);
+  this.router.navigate(['/team-mood', encoded]);
+}
 }

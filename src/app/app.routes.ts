@@ -35,5 +35,15 @@ export const routes: Routes = [
   path:'mood-trend',
   loadComponent:()=>
     import('./mood-trend/mood-trend.component').then(m=>m.MoodTrendComponent),
+},
+{
+  path:'view-mood/:name',
+  loadComponent: () =>
+    import('./mood-trend/mood-trend.component').then(m => m.MoodTrendComponent),
+},
+{
+  path:'team-mood/:teamName',
+  loadComponent:() =>
+    import('./team-mood/team-mood.component').then(m=>m.TeamMoodComponent),
 }
 ];

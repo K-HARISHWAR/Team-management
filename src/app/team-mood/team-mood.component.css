@@ -23,23 +23,6 @@
   color: white;
 }
 
-.mood-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 2rem;
-}
-
-.mood-table th,
-.mood-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-.mood-table th {
-  background-color: #f4f4f4;
-}
-
 canvas {
   margin-bottom: 2rem;
 }
