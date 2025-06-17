@@ -9,6 +9,7 @@ interface MoodEntry {
   mood: string;
   note: string;
   date: string;
+  dayRating?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -51,7 +52,7 @@ export class MoodService {
         res.docs.forEach((doc: any) => {
           moodCount[doc.mood] = (moodCount[doc.mood] || 0) + 1;
         });
-        const entries = Object.entries(moodCount) as [string, number][];
+        const entries = Object.entries(moodCount);
         const frequentMood = entries.length
           ? entries.reduce((a, b) => (b[1] > a[1] ? b : a))[0]
           : 'N/A';
@@ -89,10 +90,19 @@ export class MoodService {
   }
 
   getTeamMoods(team: string, range: '7d' | '30d'): Observable<MoodEntry[]> {
+    const today = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(today.getDate() - (range === '7d' ? 7 : 30));
+    const pastISO = pastDate.toISOString().split('T')[0];
+
     const body = {
-      selector: { team },
-      fields: ['name', 'mood', 'date']
+      selector: {
+        team,
+        date: { "$gte": pastISO }
+      },
+      fields: ['name', 'mood', 'date', 'dayRating']
     };
+
     return this.http.post<any>(`${this.dbUrl}/_find`, body, { headers: this.headers }).pipe(
       map(res => res.docs)
     );

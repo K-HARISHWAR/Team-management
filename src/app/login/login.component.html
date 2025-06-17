@@ -1,17 +1,37 @@
 <div class="login-container">
   <h2>Team Mood Tracker</h2>
 
-  <form (ngSubmit)="onLogin()">
-    <label>Email</label>
-    <input type="email" [(ngModel)]="email" name="email" required />
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" formControlName="email" />
+      <div class="error" *ngIf="email?.touched && email?.invalid">
+        <div *ngIf="email?.errors?.['required']">Email is required</div>
+        <div *ngIf="email?.errors?.['pattern']">Enter a valid email address</div>
+      </div>
+    </div>
 
-    <label>Password</label>
-    <input type="password" [(ngModel)]="password" name="password" required />
+    <div class="form-group">
+      <label for="password">Password</label>
+      <div class="password-wrapper">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          formControlName="password"
+        />
+        <span class="toggle-icon" (click)="showPassword = !showPassword">
+          {{ showPassword ? '🙈' : '👁️' }}
+        </span>
+      </div>
+      <div class="error" *ngIf="password?.touched && password?.invalid">
+        <div *ngIf="password?.errors?.['required']">Password is required</div>
+      </div>
+    </div>
 
-    <button type="submit" [disabled]="loading">Login</button>
+    <button type="submit" [disabled]="loginForm.invalid || loading">
+      {{ loading ? 'Logging in...' : 'Login' }}
+    </button>
 
     <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
   </form>
-
-  <p class="signup-link">Need an account? Ask your admin to register you.</p>
 </div>

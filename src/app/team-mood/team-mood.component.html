@@ -1,17 +1,34 @@
 <div class="team-overview-wrapper">
-  <h2>📊 Team Mood Overview</h2>
+  <div class="top-bar">
+    <button class="back-button" (click)="goToAdminDashboard()">← Back to Admin Dashboard</button>
+  </div>
+  <h2 class="heatmap-heading">🔥 Team Mood Heatmap</h2>
 
   <div class="filter-buttons">
     <button [class.active]="filterRange === '7d'" (click)="onFilterChange('7d')">Last 7 Days</button>
     <button [class.active]="filterRange === '30d'" (click)="onFilterChange('30d')">Last 30 Days</button>
   </div>
 
-  <div style="max-width: 500px; margin: auto;">
-    <canvas baseChart
-            [data]="{ labels: moodChartLabels, datasets: [{ data: moodChartData }] }"
-            [type]="'pie'"
-            [options]="chartOptions">
-    </canvas>
+  <p *ngIf="teamMoods.length === 0" class="no-data-msg">No mood entries found for this range.</p>
+
+  <div *ngIf="teamMoods.length > 0" class="heatmap-wrapper">
+    <table class="heatmap-table">
+      <thead>
+        <tr>
+          <th>👤 Member</th>
+          <th *ngFor="let date of uniqueDates">{{ date }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let member of uniqueMembers">
+          <td class="member-name">{{ member }}</td>
+          <td *ngFor="let date of uniqueDates"
+              [ngStyle]="{ 'background-color': getMoodColor(heatmapMatrix[member][date]) }"
+              [title]="'Day Rating: ' + (heatmapMatrix[member][date] !== undefined ? heatmapMatrix[member][date] : 'N/A')">
+            {{ heatmapMatrix[member][date] !== undefined ? heatmapMatrix[member][date] : '-' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <p *ngIf="teamMoods.length === 0">No mood entries found for this range.</p>
 </div>

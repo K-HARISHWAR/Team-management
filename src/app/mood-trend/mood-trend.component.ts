@@ -4,7 +4,7 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import PouchDB from 'pouchdb-browser';
 import { SessionService } from '../services/session.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface MoodEntry {
   _id: string;
@@ -63,7 +63,8 @@ export class MoodTrendComponent implements OnInit {
 
   constructor(
     private session: SessionService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router:Router
   ) {}
 
   ngOnInit(): void {
@@ -143,5 +144,9 @@ export class MoodTrendComponent implements OnInit {
         },
       ],
     };
+  }
+
+  goBack(){
+    this.router.navigate(['/home']);
   }
 }

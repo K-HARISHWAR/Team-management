@@ -32,6 +32,12 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
 .success {
   color: green;
   margin-top: 1rem;
@@ -40,4 +46,21 @@ button {
 .error {
   color: red;
   margin-top: 1rem;
+}
+
+.back-button {
+  background-color: transparent;
+  border: 1px solid #4caf50;
+  color: #4caf50;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #4caf50;
+  color: white;
 }

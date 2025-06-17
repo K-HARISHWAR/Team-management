@@ -23,16 +23,16 @@ export class MoodFormComponent implements OnInit {
     private moodService: MoodService,
     private router: Router
   ) {}
-
+  today: string = new Date().toISOString().slice(0, 10);
   ngOnInit(): void {
     this.name = localStorage.getItem('name') || '';
     this.team = localStorage.getItem('team') || '';
-
+    this.today = new Date().toISOString().slice(0, 10);
     this.moodForm = this.fb.group({
       mood: ['', Validators.required],
       note: [''],
       dayRating: [null, [Validators.required,Validators.min(1),Validators.max(5)]],
-      date: [new Date().toISOString().slice(0, 10), Validators.required]
+      date: [this.today, Validators.required]
     });
   }
 
@@ -62,4 +62,9 @@ export class MoodFormComponent implements OnInit {
       }
     });
   }
+
+  goBack(): void {
+  this.router.navigate(['/home']);
+}
+
 }

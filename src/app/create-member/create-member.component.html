@@ -2,27 +2,47 @@
   <h2>Create New Member</h2>
 
   <form [formGroup]="memberForm" (ngSubmit)="onSubmit()">
-    <label>Name:</label>
+
+    <label>Name</label>
     <input type="text" formControlName="name" />
+    <div class="error" *ngIf="name?.touched && name?.invalid">
+      <small *ngIf="name?.errors?.['required']">Name is required</small>
+    </div>
 
-    <label>Email:</label>
+    <label>Email</label>
     <input type="email" formControlName="email" />
+    <div class="error" *ngIf="email?.touched && email?.invalid">
+      <small *ngIf="email?.errors?.['required']">Email is required</small>
+      <small *ngIf="email?.errors?.['pattern']">Enter a valid email address</small>
+    </div>
 
-    <label>Password:</label>
+    <label>Password</label>
     <input type="password" formControlName="password" />
+    <div class="error" *ngIf="password?.touched && password?.invalid">
+      <small *ngIf="password?.errors?.['required']">Password is required</small>
+    </div>
 
-    <label>Role:</label>
+    <label>Role</label>
     <select formControlName="role">
+      <option value="">Select Role</option>
       <option value="user">User</option>
       <option value="admin">Admin</option>
     </select>
+    <div class="error" *ngIf="role?.touched && role?.invalid">
+      <small *ngIf="role?.errors?.['required']">Role is required</small>
+    </div>
 
-    <label>Team:</label>
+    <label>Team</label>
     <input type="text" formControlName="team" />
+    <div class="error" *ngIf="team?.touched && team?.invalid">
+      <small *ngIf="team?.errors?.['required']">Team is required</small>
+    </div>
 
     <button type="submit" [disabled]="memberForm.invalid">Create Member</button>
   </form>
 
   <p class="success" *ngIf="message">{{ message }}</p>
   <p class="error" *ngIf="error">{{ error }}</p>
+  <button type="button" class="back-button" (click)="goBack()">← Back</button>
 </div>
+

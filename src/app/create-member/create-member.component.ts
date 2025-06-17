@@ -20,7 +20,7 @@ export class CreateMemberComponent {
   constructor(private fb: FormBuilder, private router: Router) {
     this.memberForm = this.fb.group({
       name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+([._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+\\.com$')]],
       password: ['', Validators.required],
       role: ['', Validators.required],
       team: ['', Validators.required]
@@ -55,4 +55,24 @@ export class CreateMemberComponent {
       this.message = '';
     }
   }
+
+  get name() {
+  return this.memberForm.get('name');
+}
+get email() {
+  return this.memberForm.get('email');
+}
+get password() {
+  return this.memberForm.get('password');
+}
+get role() {
+  return this.memberForm.get('role');
+}
+get team() {
+  return this.memberForm.get('team');
+}
+goBack() {
+  this.router.navigate(['/admin']);
+}
+
 }

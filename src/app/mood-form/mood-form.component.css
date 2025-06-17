@@ -102,3 +102,25 @@ button:disabled {
   background-color: #c0d4f2;
   cursor: not-allowed;
 }
+
+.back-button {
+  background-color: #346893;
+  color: white;
+  padding: 8px 14px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #666;
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}

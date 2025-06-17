@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ThemeService } from '../services/theme.service';
 import { MoodService } from '../services/mood.service';
 import { SessionService } from '../services/session.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
@@ -54,9 +55,24 @@ export class HomeComponent implements OnInit {
   }
 
   logout(): void {
-    this.sessionService.clear();
-    this.router.navigate(['/']);
-  }
+  Swal.fire({
+    title: 'Logout Confirmation',
+    text: 'Are you sure you want to log out?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#4caf50',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, logout',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.sessionService.clear();
+      this.router.navigate(['/']);
+      Swal.fire('Logged out!', 'You have been successfully logged out.', 'success');
+    }
+  });
+}
+
 
   setTab(tab: 'form' | 'list'): void {
     this.activeTab = tab;

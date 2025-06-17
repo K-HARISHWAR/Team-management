@@ -2,16 +2,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ChartConfiguration, ChartType } from 'chart.js';
-import { NgChartsModule } from 'ng2-charts';
 import { MoodService } from '../services/mood.service';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-team-mood-overview',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, NgChartsModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule],
   templateUrl: './team-mood.component.html',
   styleUrls: ['./team-mood.component.css']
 })
@@ -20,26 +18,14 @@ export class TeamMoodComponent implements OnInit {
   filterRange: '7d' | '30d' = '7d';
   teamMoods: any[] = [];
 
-  moodChartLabels: string[] = [];
-  moodChartData: number[] = [];
-  moodChartType: ChartType = 'pie';
-
-  chartOptions: ChartConfiguration<'pie'>['options'] = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Team Mood Distribution'
-      }
-    }
-  };
+  heatmapMatrix: { [name: string]: { [date: string]: number } } = {};
+  uniqueDates: string[] = [];
+  uniqueMembers: string[] = [];
 
   constructor(
     private moodService: MoodService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router:Router
   ) {}
 
   ngOnInit(): void {
@@ -58,20 +44,42 @@ export class TeamMoodComponent implements OnInit {
   fetchTeamMoods(): void {
     this.moodService.getTeamMoods(this.teamName, this.filterRange).subscribe(moods => {
       this.teamMoods = moods;
-      this.updateChart();
+      this.generateHeatmapMatrix();
     });
   }
 
-  updateChart(): void {
-    const moodCounts: { [mood: string]: number } = {};
+  generateHeatmapMatrix(): void {
+    const matrix: { [name: string]: { [date: string]: number } } = {};
+    const dates = new Set<string>();
+    const members = new Set<string>();
+
     this.teamMoods.forEach(entry => {
-      const mood = entry.mood;
-       if (mood && typeof mood === 'string' && mood.trim() !== '') {
-      moodCounts[mood] = (moodCounts[mood] || 0) + 1;
-    }
+      const name = entry.name;
+      const date = entry.date;
+      const rating = Number(entry.dayRating); // ensure it's a number
+
+      if (!matrix[name]) matrix[name] = {};
+      matrix[name][date] = rating;
+
+      dates.add(date);
+      members.add(name);
     });
 
-    this.moodChartLabels = Object.keys(moodCounts);
-    this.moodChartData = Object.values(moodCounts);
+    this.heatmapMatrix = matrix;
+    this.uniqueDates = Array.from(dates).sort();
+    this.uniqueMembers = Array.from(members).sort();
+  }
+
+  getMoodColor(score: number | undefined): string {
+    if (score === undefined) return '#ecf0f1';
+    if (score >= 4.5) return '#2ecc71';         
+    if (score >= 3.5) return '#f1c40f';         
+    if (score >= 2.5) return '#e67e22';         
+    if (score >= 1.5) return '#e74c3c';         
+    return '#c0392b';                          
+  }
+   
+  goToAdminDashboard() {
+  this.router.navigate(['/admin']);
   }
 }

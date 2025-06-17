@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import PouchDB from 'pouchdb-browser';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-admin',
@@ -56,8 +57,24 @@ export class AdminComponent implements OnInit {
   }
 
   logout() {
-    this.router.navigate(['']);
-  }
+  Swal.fire({
+    title: 'Logout Confirmation',
+    text: 'Are you sure you want to log out?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#4caf50',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, logout',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.router.navigate(['']);
+      Swal.fire('Logged out!', 'You have been successfully logged out.', 'success');
+    }
+  });
+}
+
+
 
   async deleteUser(user: any) {
     try {

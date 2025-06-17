@@ -1,12 +1,16 @@
 <div class="form-wrapper">
   <h2>📝 Log Your Mood</h2>
-
+  
   <form [formGroup]="moodForm" (ngSubmit)="submitMood()">
+    
     <div class="form-section mood-options">
       <label *ngFor="let emoji of moodOptions" class="mood-label">
         <input type="radio" formControlName="mood" [value]="emoji" />
         <span class="emoji">{{ emoji }}</span>
       </label>
+      <div class="error" *ngIf="moodForm.get('mood')?.touched && moodForm.get('mood')?.invalid">
+        Please select a mood.
+      </div>
     </div>
 
     <div class="form-section day-rating">
@@ -15,11 +19,17 @@
         <option value="" disabled>Select a rating</option>
         <option *ngFor="let rating of [1, 2, 3, 4, 5]" [value]="rating">{{ rating }}</option>
       </select>
+      <div class="error" *ngIf="moodForm.get('dayRating')?.touched && moodForm.get('dayRating')?.invalid">
+        Please provide a rating between 1 and 5.
+      </div>
     </div>
 
     <div class="form-section date-field">
       <label for="date">📅 Date</label>
-      <input type="date" id="date" formControlName="date" />
+      <input type="date" id="date" formControlName="date" [max]="today" />
+      <div class="error" *ngIf="moodForm.get('date')?.touched && moodForm.get('date')?.invalid">
+        Please select a valid date (not in the future).
+      </div>
     </div>
 
     <div class="form-section">
@@ -36,4 +46,6 @@
       {{ isSubmitting ? 'Submitting...' : 'Submit Mood' }}
     </button>
   </form>
+
+  <button type="button" class="back-button" (click)="goBack()">← Back</button>
 </div>
