@@ -89,8 +89,14 @@ export class AdminComponent implements OnInit {
 
   navigateToUserMood(userName: string) {
   const encoded = encodeURIComponent(userName);
-  this.router.navigate(['/view-mood', encoded]);
+  this.router.navigate(['/mood-trend'], {
+    queryParams: {
+      user: encoded,
+      from: 'admin'
+    }
+  });
 }
+
 
 navigateToTeamMood(teamName: string) {
   const encoded = encodeURIComponent(teamName);

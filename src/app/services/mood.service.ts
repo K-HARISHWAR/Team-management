@@ -4,6 +4,7 @@ import { Observable, map } from 'rxjs';
 
 interface MoodEntry {
   _id?: string;
+  _rev?:string;
   name: string;
   team: string;
   mood: string;
@@ -64,30 +65,23 @@ export class MoodService {
     );
   }
 
-  getRecentMoods(name: string): Observable<{ mood: string; note: string; date: string }[]> {
-    const query = {
-      selector: { name },
-      sort: [{ date: 'desc' }],
-      limit: 3,
-      fields: ['mood', 'note', 'date']
-    };
+   getRecentMoods(name: string): Observable<MoodEntry[]> {
+  const query = {
+    selector: { name },
+    sort: [{ date: 'desc' }],
+    limit: 3,
+    fields: ['_id', '_rev', 'mood', 'note', 'date', 'name', 'team']
+  };
 
-    return this.http.post<{ docs: { mood: string; note?: string; date: string }[] }>(
-      `${this.dbUrl}/_find`,
-      query,
-      { headers: this.headers }
-    ).pipe(
-      map(res =>
-        res.docs
-          .filter(doc => doc.mood && doc.date)
-          .map(doc => ({
-            mood: doc.mood,
-            note: doc.note || '',
-            date: doc.date
-          }))
-      )
-    );
-  }
+  return this.http.post<{ docs: MoodEntry[] }>(
+    `${this.dbUrl}/_find`,
+    query,
+    { headers: this.headers }
+  ).pipe(
+    map(res => res.docs)
+  );
+}
+
 
   getTeamMoods(team: string, range: '7d' | '30d'): Observable<MoodEntry[]> {
     const today = new Date();
@@ -134,4 +128,26 @@ export class MoodService {
       });
     });
   }
+
+  getMoodsByName(name: string) {
+  const body = {
+    selector: { name },
+    sort: [{ date: 'desc' }]
+  };
+
+  return this.http.post<any>(`${this.dbUrl}/_find`, body, {
+    headers: this.headers 
+  });
+}
+
+updateMoodEntry(entry: MoodEntry): Observable<any> {
+  if (!entry._id || !entry._rev) {
+    throw new Error('Missing _id or _rev for update.');
+  }
+
+  return this.http.put(`${this.dbUrl}/${entry._id}`, entry, {
+    headers: this.headers
+  });
+}
+
 }

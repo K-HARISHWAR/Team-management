@@ -1,13 +1,9 @@
 <div class="home-wrapper" [class.dark-mode]="isDarkMode">
+  
   <div class="nav-bar">
     <div class="nav-left">
-      <button class="nav-button" [class.active]="activeTab === 'form'" (click)="goToMoodForm()">
-        ➕ Add Mood
-      </button>
-      <button class="nav-button" [class.active]="activeTab === 'list'" (click)="goToMoodTrend()">
-        📈 Mood Trend
-      </button>
-
+      <button class="nav-button" [class.active]="activeTab === 'form'" (click)="goToMoodForm()">➕ Add Mood</button>
+      <button class="nav-button" [class.active]="activeTab === 'list'" (click)="goToMoodTrend()">📈 Mood Trend</button>
       <div class="streak-tracker">
         <span class="streak-icon">🔥</span>
         <span class="streak-label">Streak: <strong>{{ streakCount }}</strong> days</span>
@@ -45,28 +41,71 @@
 
     <div class="stats-section">
       <h3>Your Mood Stats</h3>
-      <div class="stat-box">
-        <strong>Total Entries:</strong> {{ totalEntries }}
-      </div>
-      <div class="stat-box">
-        <strong>Most Frequent Mood:</strong> {{ mostFrequentMood }}
-      </div>
+      <div class="stat-box"><strong>Total Entries:</strong> {{ totalEntries }}</div>
+      <div class="stat-box"><strong>Most Frequent Mood:</strong> {{ mostFrequentMood }}</div>
     </div>
   </div>
 
   <section class="recent-entries-section">
-    <h3>📝 Recent Mood Entries</h3>
+    <div class="entries-header">
+      <h3>📝 Recent Mood Entries</h3>
+      <button class="view-button" (click)="goToMoodView()">View All</button>
+    </div>
+
     <div *ngIf="recentMoods?.length; else noEntries">
       <div class="entry-card" *ngFor="let entry of recentMoods">
         <div class="entry-header">
           <span class="entry-date">{{ entry.date | date: 'MMM d, y' }}</span>
           <span class="entry-mood">{{ entry.mood | titlecase }}</span>
         </div>
-        <p class="entry-note">{{ entry.note || 'No note added.' }}</p>
+
+        <div *ngIf="entry.isEditable && entry.isEditing; else viewOnly">
+          <textarea [(ngModel)]="entry.note" rows="2" cols="40" class="note-edit-area"></textarea>
+          <button (click)="openEditModal(entry)" class="save-button">💾 Save</button>
+        </div>
+
+        <ng-template #viewOnly>
+          <p class="entry-note">{{ entry.note || 'No note added.' }}</p>
+          <button *ngIf="entry.isEditable" (click)="openEditModal(entry)" class="edit-button">✏️ Edit</button>
+        </ng-template>
       </div>
     </div>
+
     <ng-template #noEntries>
       <p class="no-entries">You haven't logged any moods recently.</p>
     </ng-template>
+
+    <div class="modal-backdrop" *ngIf="showModal">
+      <div class="modal-content">
+        <h3>📝 Edit Mood Entry</h3>
+
+        <label>Mood:</label>
+        <div class="mood-options">
+          <label *ngFor="let option of moodOptions" class="mood-label">
+            <input
+              type="radio"
+              name="editMood"
+              [value]="option.emoji"
+              [(ngModel)]="editingEntry.mood"
+            />
+            <span class="emoji">{{ option.emoji }}</span>
+            <span class="mood-text">{{ option.label }}</span>
+          </label>
+        </div>
+
+        <label>⭐ Rate Your Day:</label>
+        <select [(ngModel)]="editingEntry.dayRating">
+          <option *ngFor="let rating of [1, 2, 3, 4, 5]" [value]="rating">{{ rating }}</option>
+        </select>
+
+        <label>📝 Note:</label>
+        <textarea [(ngModel)]="editingEntry.note" rows="3" placeholder="Write an optional note..."></textarea>
+
+        <div class="modal-actions">
+          <button (click)="saveEdit()" class="save-button">💾 Save</button>
+          <button (click)="showModal = false" class="cancel-button">Cancel</button>
+        </div>
+      </div>
+    </div>
   </section>
 </div>

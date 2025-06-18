@@ -45,5 +45,10 @@ export const routes: Routes = [
   path:'team-mood/:teamName',
   loadComponent:() =>
     import('./team-mood/team-mood.component').then(m=>m.TeamMoodComponent),
+},
+{
+  path:'mood-view',
+  loadComponent:() =>
+    import('./mood-view/mood-view.component').then(m=>m.MoodViewComponent),
 }
 ];

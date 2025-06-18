@@ -59,28 +59,30 @@ export class MoodTrendComponent implements OnInit {
     }
   };
 
-  userName: string = ''; // For displaying in the heading
+  userName: string = '';
+  from: string = 'user'; // Default origin
 
   constructor(
     private session: SessionService,
     private route: ActivatedRoute,
-    private router:Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    const nameParam = this.route.snapshot.paramMap.get('name');
+    this.route.queryParams.subscribe(params => {
+      const nameParam = params['user'];
+      this.from = params['from'] || 'user';
 
-    if (nameParam) {
-      const decodedName = decodeURIComponent(nameParam);
-      this.userName = decodedName;
-      this.fetchUserMoodData(decodedName);
-      this.setupLiveSync(decodedName);
-    } else {
-      const loggedInName = this.session.name;
-      this.userName = loggedInName;
-      this.fetchUserMoodData(loggedInName);
-      this.setupLiveSync(loggedInName);
-    }
+      if (nameParam) {
+        this.userName = decodeURIComponent(nameParam);
+        this.fetchUserMoodData(this.userName);
+        this.setupLiveSync(this.userName);
+      } else {
+        this.userName = this.session.name;
+        this.fetchUserMoodData(this.userName);
+        this.setupLiveSync(this.userName);
+      }
+    });
   }
 
   setupLiveSync(name: string) {
@@ -93,10 +95,7 @@ export class MoodTrendComponent implements OnInit {
   }
 
   async fetchUserMoodData(name: string) {
-    if (!name) {
-      console.log('No username found');
-      return;
-    }
+    if (!name) return;
 
     const result = await this.db.allDocs({ include_docs: true });
     const entries: MoodEntry[] = result.rows
@@ -146,7 +145,11 @@ export class MoodTrendComponent implements OnInit {
     };
   }
 
-  goBack(){
-    this.router.navigate(['/home']);
+  goBack() {
+    if (this.from === 'admin') {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
 }
