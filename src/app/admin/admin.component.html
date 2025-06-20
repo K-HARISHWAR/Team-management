@@ -15,6 +15,10 @@
   <section *ngIf="errorMessage" class="error">
     <p>{{ errorMessage }}</p>
   </section>
+  <section>
+  <input type="text" [(ngModel)]="newTeamName" placeholder="New team name" />
+  <button class="add-team-box" (click)="addTeam()">➕ Add Team</button>
+  </section>
 
   <section *ngIf="!loading && !selectedTeam" class="team-cards">
     <h3>Teams</h3>
@@ -23,8 +27,9 @@
         class="team-card"
         *ngFor="let team of teams"
         (click)="selectTeam(team)">
-        <span class="team-name">{{ team }}</span>
+        <span class="team-name">{{ team }}    </span><br>
         <span class="team-count">Members: {{ getTeamMembers(team).length }}</span>
+          <button class="delete-team-button" (click)="deleteTeam(team); $event.stopPropagation()">🗑 Delete</button>
       </article>
     </div>
   </section>

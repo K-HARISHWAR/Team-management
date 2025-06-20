@@ -81,7 +81,7 @@ textarea {
   resize: vertical;
 }
 
-button {
+.submit {
   width: 100%;
   padding: 0.9rem;
   background-color: #007bff;
@@ -94,11 +94,11 @@ button {
   transition: background-color 0.25s;
 }
 
-button:hover:enabled {
+.submit:hover:enabled {
   background-color: #0069d9;
 }
 
-button:disabled {
+.submit:disabled {
   background-color: #c0d4f2;
   cursor: not-allowed;
 }
@@ -107,7 +107,7 @@ button:disabled {
   background-color: #346893;
   color: white;
   padding: 8px 14px;
-  margin-top: 20px;
+  margin-left: 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;

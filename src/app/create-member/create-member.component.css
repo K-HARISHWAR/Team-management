@@ -15,7 +15,8 @@ label {
   margin-top: 1rem;
 }
 
-input, select {
+input,
+select {
   padding: 0.5rem;
   font-size: 1rem;
   margin-top: 0.25rem;
@@ -37,7 +38,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-
 .success {
   color: green;
   margin-top: 1rem;
@@ -55,7 +55,7 @@ button:disabled {
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  margin-bottom: 15px;
+  margin-left: 10px;
   font-size: 14px;
   transition: background 0.2s ease;
 }
@@ -63,4 +63,26 @@ button:disabled {
 .back-button:hover {
   background-color: #4caf50;
   color: white;
+}
+
+.progress-bar-wrapper {
+  width: 100%;
+  background-color: #e0e0e0;
+  height: 10px;
+  border-radius: 5px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.strength-label {
+  display: block;
+  font-weight: bold;
+  margin-top: 5px;
 }

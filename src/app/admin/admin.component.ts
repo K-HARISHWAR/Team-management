@@ -1,13 +1,15 @@
+import { TeamService } from './../services/team.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import PouchDB from 'pouchdb-browser';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
@@ -17,10 +19,11 @@ export class AdminComponent implements OnInit {
   selectedTeam: string | null = null;
   loading = false;
   errorMessage = '';
+  newTeamName: string = '';
 
   private userDb = new PouchDB('http://Harishwar:harish22@localhost:5984/users');
 
-  constructor(public router: Router) {}
+  constructor(public router: Router, private teamService: TeamService) {}
 
   async ngOnInit() {
     this.loading = true;
@@ -30,14 +33,24 @@ export class AdminComponent implements OnInit {
         .filter(row => !!row.doc && row.doc._id.startsWith('user:'))
         .map(row => row.doc!);
 
-      const teamSet = new Set(this.users.map(user => user.team).filter(Boolean));
-      this.teams = Array.from(teamSet);
+      const dbTeams = this.users.map(user => user.team).filter(Boolean);
+      const localTeams = this.teamService.getTeams();
+      const merged = Array.from(new Set([...dbTeams, ...localTeams]));
+      this.teams = merged;
     } catch (error: any) {
       this.errorMessage = 'Failed to fetch users: ' + (error.message || 'Unknown error');
       console.error(error);
     } finally {
       this.loading = false;
     }
+  }
+
+  addTeam() {
+    const trimmed = this.newTeamName.trim();
+    if (!trimmed || this.teams.includes(trimmed)) return;
+    this.teamService.addTeam(trimmed); 
+    this.teams.push(trimmed);
+    this.newTeamName = '';
   }
 
   getTeamMembers(team: string): any[] {
@@ -56,50 +69,90 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/create-member']);
   }
 
-  logout() {
-  Swal.fire({
-    title: 'Logout Confirmation',
-    text: 'Are you sure you want to log out?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#4caf50',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, logout',
-    cancelButtonText: 'Cancel'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.router.navigate(['']);
-      Swal.fire('Logged out!', 'You have been successfully logged out.', 'success');
-    }
-  });
-}
-
-
-
   async deleteUser(user: any) {
-    try {
-      const doc = await this.userDb.get(user._id);
-      await this.userDb.remove(doc);
-      this.users = this.users.filter(u => u._id !== user._id);
-      console.log(`User ${user.name} deleted.`);
-    } catch (err) {
-      console.error('Error deleting user:', err);
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to delete user "${user.name}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const doc = await this.userDb.get(user._id);
+        await this.userDb.remove(doc);
+        this.users = this.users.filter(u => u._id !== user._id);
+        Swal.fire('Deleted!', `User "${user.name}" has been deleted.`, 'success');
+      } catch (err) {
+        console.error('Delete failed:', err);
+        Swal.fire('Error', 'Failed to delete user.', 'error');
+      }
     }
   }
 
   navigateToUserMood(userName: string) {
-  const encoded = encodeURIComponent(userName);
-  this.router.navigate(['/mood-trend'], {
-    queryParams: {
-      user: encoded,
-      from: 'admin'
+    this.router.navigate(['/mood-trend'], {
+      queryParams: { user: encodeURIComponent(userName), from: 'admin' }
+    });
+  }
+
+  navigateToTeamMood(teamName: string) {
+    this.router.navigate(['/team-mood', encodeURIComponent(teamName)]);
+  }
+
+  logout() {
+    Swal.fire({
+      title: 'Logout?',
+      text: 'Are you sure you want to log out?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, logout'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.router.navigate(['']);
+        Swal.fire('Logged out!', '', 'success');
+      }
+    });
+  }
+
+  async deleteTeam(team: string) {
+    const result = await Swal.fire({
+      title: `Delete "${team}" team?`,
+      text: 'This will delete all users in this team from CouchDB and their respective mood Documents. This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete team',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const result = await this.userDb.allDocs<{team:string}>({ include_docs: true });
+      const usersToDelete = result.rows
+        .filter(row => row.doc && row.doc.team === team)
+        .map(row => ({
+          ...row.doc,
+          _deleted: true
+        }));
+
+      if (usersToDelete.length > 0) {
+        await this.userDb.bulkDocs(usersToDelete);
+        this.users = this.users.filter(u => u.team !== team);
+      }
+
+      this.teams = this.teams.filter(t => t !== team);
+      this.teamService.removeTeam(team);
+
+      Swal.fire('Deleted!', `"${team}" team and its ${usersToDelete.length} members have been deleted.`, 'success');
+    } catch (err) {
+      console.error('Error deleting team and members:', err);
+      Swal.fire('Error', 'Failed to delete team members.', 'error');
     }
-  });
-}
-
-
-navigateToTeamMood(teamName: string) {
-  const encoded = encodeURIComponent(teamName);
-  this.router.navigate(['/team-mood', encoded]);
-}
+  }
 }

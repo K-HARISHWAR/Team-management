@@ -1,10 +1,11 @@
 <button class="back-button" (click)="goBack()">← Back</button>
+
 <div class="history-container">
-  <h2>🗓️ My Mood History</h2>
+  <h2 class="heading">🗓️ My Mood History</h2>
 
   <div class="filter-bar">
     <label>
-      Month:
+       Month
       <select [formControl]="monthFilter">
         <option value="">All</option>
         <option *ngFor="let m of months" [value]="m.value">{{ m.label }}</option>
@@ -12,7 +13,7 @@
     </label>
 
     <label>
-      Year:
+      Year
       <select [formControl]="yearFilter">
         <option value="">All</option>
         <option *ngFor="let y of years" [value]="y">{{ y }}</option>
@@ -20,26 +21,26 @@
     </label>
   </div>
 
-  <div class="scroll-container">
-    <div *ngIf="groupedMoods | keyvalue as groups; else noData">
-      <div *ngFor="let group of groups">
-        <div class="month-header" (click)="toggleCollapse(group.key)">
-          <span>{{ group.key }}</span>
-          <span>{{ collapsibleStates[group.key] ? '▼' : '▶' }}</span>
-        </div>
-
-        <div *ngIf="collapsibleStates[group.key]" class="mood-list">
-          <div class="mood-card" *ngFor="let mood of group.value">
-            <h3>{{ mood.mood }}</h3>
-            <p><strong>Date:</strong> {{ mood.date }}</p>
-            <p><strong>Day Rating:</strong> {{ mood.dayRating }}</p>
-            <p><strong>Note:</strong> {{ mood.note || '—' }}</p>
-            <p><strong>Team:</strong> {{ mood.team }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <table class="mood-table" *ngIf="filteredMoods.length > 0; else noData">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Mood</th>
+        <th>Day Rating</th>
+        <th>Note</th>
+        <th>Team</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mood of filteredMoods">
+        <td>{{ mood.date }}</td>
+        <td>{{ mood.mood }}</td>
+        <td>{{ mood.dayRating }}</td>
+        <td>{{ mood.note || '—' }}</td>
+        <td>{{ mood.team }}</td>
+      </tr>
+    </tbody>
+  </table>
 
   <ng-template #noData>
     <p class="no-moods">No mood entries match your filter.</p>

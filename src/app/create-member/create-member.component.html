@@ -1,3 +1,5 @@
+<button type="button" class="back-button" (click)="goBack()">← Back</button>
+
 <div class="create-member-container">
   <h2>Create New Member</h2>
 
@@ -17,10 +19,22 @@
     </div>
 
     <label>Password</label>
-    <input type="password" formControlName="password" />
+    <input type="text" formControlName="password" />
     <div class="error" *ngIf="password?.touched && password?.invalid">
       <small *ngIf="password?.errors?.['required']">Password is required</small>
+      <small *ngIf="password?.errors?.['minlength']">Should be a minimum of 6 Characters</small>
     </div>
+
+    <div class="progress-bar-wrapper" *ngIf="passwordStrength">
+      <div
+        class="progress-bar"
+        [ngStyle]="{
+          width: getBarWidth(),
+          backgroundColor: getBarColor()
+        }"
+      ></div>
+    </div>
+    <span class="strength-label">{{ passwordStrength }}</span>
 
     <label>Role</label>
     <select formControlName="role">
@@ -32,17 +46,20 @@
       <small *ngIf="role?.errors?.['required']">Role is required</small>
     </div>
 
-    <label>Team</label>
-    <input type="text" formControlName="team" />
-    <div class="error" *ngIf="team?.touched && team?.invalid">
-      <small *ngIf="team?.errors?.['required']">Team is required</small>
-    </div>
+    <label *ngIf="role?.value === 'user'">Team</label>
+<select *ngIf="role?.value === 'user'" formControlName="team">
+  <option value="">Select a team</option>
+  <option *ngFor="let team of teams" [value]="team">{{ team }}</option>
+</select>
+<div class="error" *ngIf="role?.value === 'user' && team?.touched && team?.invalid">
+  <small *ngIf="team?.errors?.['required']">Team is required</small>
+</div>
 
-    <button type="submit" [disabled]="memberForm.invalid">Create Member</button>
+
+
+    <button type="submit" [disabled]="!isFormValid">Create Member</button>
   </form>
 
   <p class="success" *ngIf="message">{{ message }}</p>
   <p class="error" *ngIf="error">{{ error }}</p>
-  <button type="button" class="back-button" (click)="goBack()">← Back</button>
 </div>
-

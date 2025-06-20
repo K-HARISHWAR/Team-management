@@ -1,3 +1,4 @@
+<button type="button" class="back-button" (click)="goBack()">← Back</button>
 <div class="form-wrapper">
   <h2>📝 Log Your Mood</h2>
   
@@ -42,10 +43,9 @@
       </textarea>
     </div>
 
-    <button type="submit" [disabled]="moodForm.invalid || isSubmitting">
+    <button class="submit" type="submit" [disabled]="moodForm.invalid || isSubmitting">
       {{ isSubmitting ? 'Submitting...' : 'Submit Mood' }}
     </button>
   </form>
-
-  <button type="button" class="back-button" (click)="goBack()">← Back</button>
+  
 </div>

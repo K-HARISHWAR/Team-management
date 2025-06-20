@@ -60,7 +60,7 @@ export class MoodTrendComponent implements OnInit {
   };
 
   userName: string = '';
-  from: string = 'user'; // Default origin
+  from: string = 'user'; 
 
   constructor(
     private session: SessionService,

@@ -56,7 +56,7 @@ export class TeamMoodComponent implements OnInit {
     this.teamMoods.forEach(entry => {
       const name = entry.name;
       const date = entry.date;
-      const rating = Number(entry.dayRating); // ensure it's a number
+      const rating = Number(entry.dayRating); 
 
       if (!matrix[name]) matrix[name] = {};
       matrix[name][date] = rating;

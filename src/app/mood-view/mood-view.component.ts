@@ -13,12 +13,11 @@ import { Router } from '@angular/router';
 })
 export class MoodViewComponent implements OnInit {
   allMoods: any[] = [];
-  groupedMoods: { [key: string]: any[] } = {};
-  collapsibleStates: { [key: string]: boolean } = {};
+  filteredMoods: any[] = [];
 
   now = new Date();
-  monthFilter = new FormControl(this.now.toISOString().slice(5, 7)); 
-  yearFilter = new FormControl(this.now.getFullYear().toString());  
+  monthFilter = new FormControl('');
+  yearFilter = new FormControl('');
 
   months = [
     { label: 'Jan', value: '01' }, { label: 'Feb', value: '02' },
@@ -63,38 +62,17 @@ export class MoodViewComponent implements OnInit {
     const selectedMonth = this.monthFilter.value;
     const selectedYear = this.yearFilter.value;
 
-    const filtered = this.allMoods.filter(mood => {
+    this.filteredMoods = this.allMoods.filter(mood => {
       const [year, month] = mood.date.split('-');
       const matchMonth = selectedMonth ? month === selectedMonth : true;
       const matchYear = selectedYear ? year === selectedYear : true;
       return matchMonth && matchYear;
     });
 
-    this.groupByMonth(filtered);
+    this.filteredMoods.sort((a, b) => b.date.localeCompare(a.date)); 
   }
 
-  groupByMonth(moods: any[]): void {
-    this.groupedMoods = {};
-    this.collapsibleStates = {};
-
-    moods.forEach(mood => {
-      const [year, month] = mood.date.split('-');
-      const monthLabel = this.months.find(m => m.value === month)?.label;
-      const groupKey = `${monthLabel} ${year}`;
-
-      if (!this.groupedMoods[groupKey]) {
-        this.groupedMoods[groupKey] = [];
-        this.collapsibleStates[groupKey] = true; 
-      }
-      this.groupedMoods[groupKey].push(mood);
-    });
-  }
-
-  toggleCollapse(key: string): void {
-    this.collapsibleStates[key] = !this.collapsibleStates[key];
-  }
-
-  goBack() {
+  goBack(): void {
     this.router.navigate(['home']);
   }
 }
